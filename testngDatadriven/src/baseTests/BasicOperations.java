@@ -47,7 +47,7 @@ public class BasicOperations {
 		if (Rep==null)
 		{
 			Rep = new ExtentReports(System.getProperty("user.dir")+"\\ExtentReports\\"+new Date().toString().replace(" ","_").replace(":", "_"), true, DisplayOrder.OLDEST_FIRST);
-				Rep.loadConfig(new File(System.getProperty("user.dir")+"\\ExtentReportsConfig.xml"));
+				Rep.loadConfig(new File(System.getProperty("user.dir")+"\\src\\ExtentReportsConfig.xml"));
 		}
 						
 	}
