@@ -25,9 +25,9 @@ public class BasicOperations {
 	
 	public WebDriver wd=null;
 	public Properties prop = null;
-	private static ExtentReports Extent;
+	public ExtentReports Rep=null;
 	public ExtentTest test;
-	public void itialize()
+	public void initializePropertyFile()
 	{
 		if (prop==null)
 		{
@@ -42,15 +42,14 @@ public class BasicOperations {
 		}
 		
 	}
-	public static ExtentReports getExtent()
+	public void InitExtent()
 	{
-		if (Extent==null)
+		if (Rep==null)
 		{
-			Extent = new ExtentReports(System.getProperty("user.dir")+"\\ExtentReports\\"+new Date().toString().replace(" ","_").replace(":", "_"), true, DisplayOrder.OLDEST_FIRST);
-				Extent.loadConfig(new File(System.getProperty("user.dir")+"\\ExtentReportsConfig.xml"));
+			Rep = new ExtentReports(System.getProperty("user.dir")+"\\ExtentReports\\"+new Date().toString().replace(" ","_").replace(":", "_"), true, DisplayOrder.OLDEST_FIRST);
+				Rep.loadConfig(new File(System.getProperty("user.dir")+"\\ExtentReportsConfig.xml"));
 		}
-		return Extent;
-				
+						
 	}
 	public void OpenBrowser(String browser)
 	{
