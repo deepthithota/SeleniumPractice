@@ -1,19 +1,32 @@
 package baseTests;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Date;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
+import com.relevantcodes.extentreports.DisplayOrder;
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
+
 public class BasicOperations {
 	
 	public WebDriver wd=null;
 	public Properties prop = null;
+	private static ExtentReports Extent;
+	public ExtentTest test;
 	public void itialize()
 	{
 		if (prop==null)
@@ -29,7 +42,16 @@ public class BasicOperations {
 		}
 		
 	}
-	
+	public static ExtentReports getExtent()
+	{
+		if (Extent==null)
+		{
+			Extent = new ExtentReports(System.getProperty("user.dir")+"\\ExtentReports\\"+new Date().toString().replace(" ","_").replace(":", "_"), true, DisplayOrder.OLDEST_FIRST);
+				Extent.loadConfig(new File(System.getProperty("user.dir")+"\\ExtentReportsConfig.xml"));
+		}
+		return Extent;
+				
+	}
 	public void OpenBrowser(String browser)
 	{
 		System.setProperty("webdriver.gecko.driver",prop.getProperty("Firefox_Driver_Path"));
@@ -87,6 +109,7 @@ public class BasicOperations {
 	public void ReportPass()
 	{
 		
+		
 	}
 	public void ReportFail(String Message)
 	{
@@ -95,7 +118,19 @@ public class BasicOperations {
 	}
 	public void TakeScreenShot()
 	{
-		
+		String FileName = new Date().toString().replace(" ","_").replace(":", "_");
+		File src= ((TakesScreenshot)wd).getScreenshotAs(OutputType.FILE);
+		try {
+		 // now copy the  screenshot to desired location using copyFile //method
+		FileUtils.copyFile(src, new File(System.getProperty("user.dir"+"\\screenshots\\"+FileName)));
+		}
+		 
+		catch (IOException e)
+		 {
+		  System.out.println(e.getMessage());
+		 }
+			
+		test.log(LogStatus.INFO, test.addScreenCapture("user.dir"+"\\screenshots\\"+FileName));
 	}
 	
 }
