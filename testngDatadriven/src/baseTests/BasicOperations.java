@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
@@ -46,7 +47,9 @@ public class BasicOperations {
 	{
 		if (Rep==null)
 		{
-			Rep = new ExtentReports(System.getProperty("user.dir")+"\\ExtentReports\\"+new Date().toString().replace(" ","_").replace(":", "_"), true, DisplayOrder.OLDEST_FIRST);
+			String FilePath = System.getProperty("user.dir")+"\\ExtentReports\\"+new Date().toString().replace(" ","_").replace(":", "_");
+			System.out.println(FilePath);
+			Rep = new ExtentReports(FilePath, true, DisplayOrder.NEWEST_FIRST);
 				Rep.loadConfig(new File(System.getProperty("user.dir")+"\\src\\ExtentReportsConfig.xml"));
 		}
 						
@@ -67,6 +70,13 @@ public class BasicOperations {
 		else
 			System.out.println("Invalid browser name");
 		}
+		try {
+			wd.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		wd.manage().window().maximize();
 	}
 	
 	public void navigate(String url)
@@ -121,7 +131,7 @@ public class BasicOperations {
 		File src= ((TakesScreenshot)wd).getScreenshotAs(OutputType.FILE);
 		try {
 		 // now copy the  screenshot to desired location using copyFile //method
-		FileUtils.copyFile(src, new File(System.getProperty("user.dir"+"\\screenshots\\"+FileName)));
+		FileUtils.copyFile(src, new File(System.getProperty("user.dir")+"\\screenshots\\"+FileName));
 		}
 		 
 		catch (IOException e)
@@ -129,7 +139,7 @@ public class BasicOperations {
 		  System.out.println(e.getMessage());
 		 }
 			
-		test.log(LogStatus.INFO, test.addScreenCapture("user.dir"+"\\screenshots\\"+FileName));
+		test.log(LogStatus.INFO, test.addScreenCapture(System.getProperty("user.dir")+"\\screenshots\\"+FileName));
 	}
 	
 }
