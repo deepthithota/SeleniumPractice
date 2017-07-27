@@ -1,9 +1,13 @@
 package baseTests;
 
+import org.testng.Assert;
+import org.testng.AssertJUnit;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -16,6 +20,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.testng.asserts.SoftAssert;
 
 import com.relevantcodes.extentreports.DisplayOrder;
 import com.relevantcodes.extentreports.ExtentReports;
@@ -48,9 +53,9 @@ public class BasicOperations {
 		if (Rep==null)
 		{
 			String FilePath = System.getProperty("user.dir")+"\\ExtentReports\\"+new Date().toString().replace(" ","_").replace(":", "_");
-			System.out.println(FilePath);
+			//System.out.println(FilePath);
 			Rep = new ExtentReports(FilePath, true, DisplayOrder.NEWEST_FIRST);
-				Rep.loadConfig(new File(System.getProperty("user.dir")+"\\src\\ExtentReportsConfig.xml"));
+			Rep.loadConfig(new File(System.getProperty("user.dir")+"\\src\\ExtentReportsConfig.xml"));
 		}
 						
 	}
@@ -88,42 +93,56 @@ public class BasicOperations {
 	public void CloseBrowser()
 	{
 		wd.quit();
+		Rep.flush();
+		
 	}
 	
 
 	public void click(String Locatortype)
 	{
+		if (IsElementPresent(Locatortype))
 		FindElement(Locatortype).click();
+		else ReportFail("Element not present");
 	}
 	
 	public void typekeys(String Locatortype,String keys)
 	{
+		if (IsElementPresent(Locatortype))
 		FindElement(Locatortype).sendKeys(keys);
+		else ReportFail("Element not present");
 	}
 	
 	public WebElement FindElement(String Locatortype)
 	{
 		WebElement wb = null;
+		try
+		{
 		if(Locatortype.endsWith("_id"))
-			wb=wd.findElement(By.id(System.getProperty(Locatortype)));
+			wb=wd.findElement(By.id(prop.getProperty(Locatortype)));
 		else if(Locatortype.endsWith("_name"))
-			wb=wd.findElement(By.name(System.getProperty(Locatortype)));
+			wb=wd.findElement(By.name(prop.getProperty(Locatortype)));
 		else if(Locatortype.endsWith("_xpath"))
-			wb=wd.findElement(By.xpath(System.getProperty(Locatortype)));
+			wb=wd.findElement(By.xpath(prop.getProperty(Locatortype)));
 		else
 			System.out.println("invalid property name");
+		}
+		catch(Exception ex)
+		{
+			ReportFail(ex.getMessage());
+		}
 		return wb;
 	}
 	
 	public void ReportPass()
 	{
-		
-		
+		test.log(LogStatus.PASS, "passed");
+				
 	}
 	public void ReportFail(String Message)
 	{
-		
-	
+		TakeScreenShot();
+		test.log(LogStatus.FAIL, Message);
+		Assert.fail(Message);
 	}
 	public void TakeScreenShot()
 	{
@@ -141,5 +160,30 @@ public class BasicOperations {
 			
 		test.log(LogStatus.INFO, test.addScreenCapture(System.getProperty("user.dir")+"\\screenshots\\"+FileName));
 	}
-	
-}
+	public Boolean IsElementPresent(String Locatortype)
+	{
+		List<WebElement> wb=null;
+		try
+		{
+		if(Locatortype.endsWith("_id"))
+			wb=wd.findElements(By.id(prop.getProperty(Locatortype)));
+		else if(Locatortype.endsWith("_name"))
+			wb=wd.findElements(By.name(prop.getProperty(Locatortype)));
+		else if(Locatortype.endsWith("_xpath"))
+			wb=wd.findElements(By.xpath(prop.getProperty(Locatortype)));
+		else
+			System.out.println("invalid property name");
+		}
+		catch(Exception ex)
+		{
+			ReportFail(ex.getMessage());
+		}
+		if(wb==null) return false;
+		return true;
+	}
+	public void NavigateBack()
+	{
+		wd.navigate().back();
+	}
+	}
+
