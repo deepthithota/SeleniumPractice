@@ -6,7 +6,7 @@ I want to login
 
 Scenario: Logging in Salesforce
 
-Given I go to "url" on "Mozilla"
+Given I go to "url" on "browser"
 And I enter "username_element" as "username"
 And I enter "password_element" as "password"
 And I click on "login" button

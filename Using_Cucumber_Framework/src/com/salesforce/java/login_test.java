@@ -3,6 +3,10 @@ package com.salesforce.java;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import junit.framework.Assert;
+
+import org.openqa.selenium.By;
+
 import cucumber.api.java.en.*;
 
 //step
@@ -31,6 +35,7 @@ public class login_test {
 	@Then("^Login should be \"([^\"]*)\"$")
 	public void verify_login(String result)
 	{
+		org.junit.Assert.assertEquals(log.wb.findElement(By.id("header")).getText(),"Verify Your Identity");
 		
 	}
 }

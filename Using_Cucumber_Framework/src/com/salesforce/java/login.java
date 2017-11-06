@@ -19,13 +19,13 @@ public class login {
 	public void Open_Browser(String browser) throws FileNotFoundException, IOException, InterruptedException
 	{
 		prop =new Properties();
-		prop.load(new FileInputStream("E:\\workspace\\Using_Cucumber_Framework\\src\\com\\salesforce\\util\\config.properties"));
+		prop.load(new FileInputStream(System.getProperty("user.dir")+"\\src\\com\\salesforce\\util\\config.properties"));
 		System.setProperty("webdriver.gecko.driver",prop.getProperty("firefox_driver_path"));
 		System.setProperty("webdriver.chrome.driver",prop.getProperty("chrome_driver_path"));
 
-		if(browser.equals("Mozilla"))
+		if(prop.getProperty(browser).equals("mozilla"))
 			wb=new FirefoxDriver();
-		else if (browser.equals("Chrome"))
+		else if (prop.getProperty(browser).equals("Chrome"))
 			wb=new ChromeDriver();
 		wb.manage().window().maximize();
 		//wb.manage().timeouts().wait(1);
